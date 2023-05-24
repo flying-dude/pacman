@@ -38,6 +38,8 @@
 #include "callback.h"
 #include "conf.h"
 
+#include "ymerge_c.h"
+
 static int unlink_verbose(const char *pathname, int ignore_missing)
 {
 	int ret = unlink(pathname);
@@ -561,6 +563,11 @@ static int process_group(alpm_list_t *dbs, const char *group, int error)
 			return 0;
 		}
 
+		// queue the package in ymerge, if it is available
+		if (ymerge_process_pkg(dbs, group)) {
+			return 0;
+		}
+
 		pm_printf(ALPM_LOG_ERROR, _("target not found: %s\n"), group);
 		return 1;
 	}
@@ -916,6 +923,11 @@ int pacman_sync(alpm_list_t *targets)
 		if(!sync_syncdbs(config->op_s_sync, sync_dbs)) {
 			return 1;
 		}
+
+		if (!ymerge_sync()) {
+			return 1;
+		}
+
 	}
 
 	if(check_syncdbs(1, 1)) {

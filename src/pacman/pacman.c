@@ -1083,7 +1083,7 @@ static void cl_to_log(int argc, char *argv[])
  * @param argv
  * @return A return code indicating success, failure, etc.
  */
-int main(int argc, char *argv[])
+int pacman_main(int argc, char *argv[])
 {
 	int ret = 0;
 	uid_t myuid = getuid();
